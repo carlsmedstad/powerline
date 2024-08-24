@@ -46,12 +46,12 @@ def get_preferred_output_encoding():
 	if hasattr(locale, 'LC_MESSAGES'):
 		return (
 			locale.getlocale(locale.LC_MESSAGES)[1]
-			or locale.getdefaultlocale()[1]
+            or locale.getlocale()[1]
 			or 'ascii'
 		)
 
 	return (
-		locale.getdefaultlocale()[1]
+        locale.getlocale()[1]
 		or 'ascii'
 	)
 
@@ -66,12 +66,12 @@ def get_preferred_input_encoding():
 	if hasattr(locale, 'LC_MESSAGES'):
 		return (
 			locale.getlocale(locale.LC_MESSAGES)[1]
-			or locale.getdefaultlocale()[1]
+			or locale.getlocale()[1]
 			or 'latin1'
 		)
 
 	return (
-		locale.getdefaultlocale()[1]
+		locale.getlocale()[1]
 		or 'latin1'
 	)
 
@@ -86,7 +86,7 @@ def get_preferred_arguments_encoding():
 		a problem.
 	'''
 	return (
-		locale.getdefaultlocale()[1]
+		locale.getlocale()[1]
 		or 'latin1'
 	)
 
