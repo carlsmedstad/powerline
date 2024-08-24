@@ -111,7 +111,7 @@ class TestVimConfig(TestCase):
 class TestConfig(TestCase):
 	def test_tmux(self):
 		from powerline.segments import common
-		from imp import reload
+		from importlib import reload
 		reload(common)
 		from powerline.shell import ShellPowerline
 		with replace_attr(common, 'urllib_read', urllib_read):
@@ -165,7 +165,7 @@ class TestConfig(TestCase):
 
 	def test_wm(self):
 		from powerline.segments import common
-		from imp import reload
+		from importlib import reload
 		reload(common)
 		from powerline import Powerline
 		with replace_attr(wthr, 'urllib_read', urllib_read):
