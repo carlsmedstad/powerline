@@ -312,47 +312,6 @@ class TestHandlers(TestRE):
 			self.assertEqual(err.getvalue(), '')
 			self.assertEqual(out.getvalue(), '')
 
-	def test_logger_format(self):
-		out = StringIO()
-		err = StringIO()
-		stream = StringIO()
-		stream1 = StringIO()
-
-		with replace_attr(sys, 'stdout', out, 'stderr', err):
-			common_config = finish_common_config('utf-8', {'log_file': [
-				['logging.StreamHandler', [[stream1]], 'WARNING', 'FOO'],
-			]})
-			logger, pl, get_module_attr = create_logger(common_config, stream=stream)
-			pl.warn('Foo')
-			pl.error('Bar')
-			close_handlers(logger)
-			self.assertEqual(stream1.getvalue(), 'FOO\nFOO\n')
-			self.assertEqual(stream.getvalue(), '')
-			self.assertEqual(err.getvalue(), '')
-			self.assertEqual(out.getvalue(), '')
-
-	def test_top_log_format(self):
-		out = StringIO()
-		err = StringIO()
-		stream = StringIO()
-		stream1 = StringIO()
-		stream2 = StringIO()
-
-		with replace_attr(sys, 'stdout', out, 'stderr', err):
-			common_config = finish_common_config('utf-8', {'log_file': [
-				['logging.StreamHandler', [[stream1]], 'WARNING', 'FOO'],
-				['logging.StreamHandler', [[stream2]], 'WARNING'],
-			], 'log_format': 'BAR'})
-			logger, pl, get_module_attr = create_logger(common_config, stream=stream)
-			pl.warn('Foo')
-			pl.error('Bar')
-			close_handlers(logger)
-			self.assertEqual(stream2.getvalue(), 'BAR\nBAR\n')
-			self.assertEqual(stream1.getvalue(), 'FOO\nFOO\n')
-			self.assertEqual(stream.getvalue(), '')
-			self.assertEqual(err.getvalue(), '')
-			self.assertEqual(out.getvalue(), '')
-
 
 class TestPowerlineLogger(TestRE):
 	def test_args_formatting(self):

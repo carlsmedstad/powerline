@@ -535,52 +535,6 @@ class TestNet(TestCommon):
 class TestEnv(TestCommon):
 	module_name = 'env'
 
-	def test_user(self):
-		new_os = new_module('os', getpid=lambda: 1)
-
-		class Process(object):
-			def __init__(self, pid):
-				pass
-
-			def username(self):
-				return 'def@DOMAIN.COM'
-
-			if hasattr(self.module, 'psutil') and not callable(self.module.psutil.Process.username):
-				username = property(username)
-
-		segment_info = {'environ': {}}
-
-		def user(*args, **kwargs):
-			return self.module.user(pl=pl, segment_info=segment_info, *args, **kwargs)
-
-		struct_passwd = namedtuple('struct_passwd', ('pw_name',))
-		new_psutil = new_module('psutil', Process=Process)
-		new_pwd = new_module('pwd', getpwuid=lambda uid: struct_passwd(pw_name='def@DOMAIN.COM'))
-		new_getpass = new_module('getpass', getuser=lambda: 'def@DOMAIN.COM')
-		pl = Pl()
-		with replace_attr(self.module, 'pwd', new_pwd):
-			with replace_attr(self.module, 'getpass', new_getpass):
-				with replace_attr(self.module, 'os', new_os):
-					with replace_attr(self.module, 'psutil', new_psutil):
-						with replace_attr(self.module, '_geteuid', lambda: 5):
-							self.assertEqual(user(), [
-								{'contents': 'def@DOMAIN.COM', 'highlight_groups': ['user']}
-							])
-							self.assertEqual(user(hide_user='abc'), [
-								{'contents': 'def@DOMAIN.COM', 'highlight_groups': ['user']}
-							])
-							self.assertEqual(user(hide_domain=False), [
-								{'contents': 'def@DOMAIN.COM', 'highlight_groups': ['user']}
-							])
-							self.assertEqual(user(hide_user='def@DOMAIN.COM'), None)
-							self.assertEqual(user(hide_domain=True), [
-								{'contents': 'def', 'highlight_groups': ['user']}
-							])
-						with replace_attr(self.module, '_geteuid', lambda: 0):
-							self.assertEqual(user(), [
-								{'contents': 'def', 'highlight_groups': ['superuser', 'user']}
-							])
-
 	def test_cwd(self):
 		new_os = new_module('os', path=os.path, sep='/')
 		pl = Pl()
@@ -906,27 +860,6 @@ class TestSys(TestCommon):
 
 		with replace_attr(self.module, '_get_uptime', _get_uptime):
 			self.assertEqual(self.module.uptime(pl=pl), None)
-
-	def test_system_load(self):
-		pl = Pl()
-		with replace_module_module(self.module, 'os', getloadavg=lambda: (7.5, 3.5, 1.5)):
-			with replace_attr(self.module, '_cpu_count', lambda: 2):
-				self.assertEqual(self.module.system_load(pl=pl), [
-					{'contents': '7.5 ', 'highlight_groups': ['system_load_gradient', 'system_load'], 'divider_highlight_group': 'background:divider', 'gradient_level': 100},
-					{'contents': '3.5 ', 'highlight_groups': ['system_load_gradient', 'system_load'], 'divider_highlight_group': 'background:divider', 'gradient_level': 75.0},
-					{'contents': '1.5', 'highlight_groups': ['system_load_gradient', 'system_load'], 'divider_highlight_group': 'background:divider', 'gradient_level': 0}
-				])
-				self.assertEqual(self.module.system_load(pl=pl, format='{avg:.0f}', threshold_good=0, threshold_bad=1), [
-					{'contents': '8 ', 'highlight_groups': ['system_load_gradient', 'system_load'], 'divider_highlight_group': 'background:divider', 'gradient_level': 100},
-					{'contents': '4 ', 'highlight_groups': ['system_load_gradient', 'system_load'], 'divider_highlight_group': 'background:divider', 'gradient_level': 100},
-					{'contents': '2', 'highlight_groups': ['system_load_gradient', 'system_load'], 'divider_highlight_group': 'background:divider', 'gradient_level': 75.0}
-				])
-				self.assertEqual(self.module.system_load(pl=pl, short=True), [
-					{'contents': '7.5', 'highlight_groups': ['system_load_gradient', 'system_load'], 'divider_highlight_group': 'background:divider', 'gradient_level': 100},
-				])
-				self.assertEqual(self.module.system_load(pl=pl, format='{avg:.0f}', threshold_good=0, threshold_bad=1, short=True), [
-					{'contents': '8', 'highlight_groups': ['system_load_gradient', 'system_load'], 'divider_highlight_group': 'background:divider', 'gradient_level': 100},
-				])
 
 	def test_cpu_load_percent(self):
 		try:

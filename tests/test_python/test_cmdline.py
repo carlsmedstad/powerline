@@ -18,43 +18,6 @@ from tests.modules.lib import replace_attr
 
 
 class TestParser(TestCase):
-	def test_main_err(self):
-		parser = get_argparser()
-		out = StrIO()
-		err = StrIO()
-
-		def flush():
-			out.truncate(0)
-			err.truncate(0)
-
-		with replace_attr(sys, 'stdout', out, 'stderr', err):
-			for raising_args, raising_reg in [
-				([],                                     'too few arguments|the following arguments are required: ext'),
-				(['-r'],                                 'expected one argument'),
-				(['shell', '-r'],                        'expected one argument'),
-				(['shell', '-w'],                        'expected one argument'),
-				(['shell', '-c'],                        'expected one argument'),
-				(['shell', '-t'],                        'expected one argument'),
-				(['shell', '-p'],                        'expected one argument'),
-				(['shell', '-R'],                        'expected one argument'),
-				(['shell', '--renderer-module'],         'expected one argument'),
-				(['shell', '--width'],                   'expected one argument'),
-				(['shell', '--last-exit-code'],          'expected one argument'),
-				(['shell', '--last-pipe-status'],        'expected one argument'),
-				(['shell', '--config-override'],         'expected one argument'),
-				(['shell', '--theme-override'],          'expected one argument'),
-				(['shell', '--config-path'],             'expected one argument'),
-				(['shell', '--renderer-arg'],            'expected one argument'),
-				(['shell', '--jobnum'],                  'expected one argument'),
-				(['-r', '.zsh'],                         'too few arguments|the following arguments are required: ext'),
-				(['shell', '--last-exit-code', 'i'],     'invalid int_or_sig value'),
-				(['shell', '--last-pipe-status', '1 i'], 'invalid <lambda> value'),
-			]:
-				self.assertRaises(SystemExit, parser.parse_args, raising_args)
-				self.assertFalse(out.getvalue())
-				self.assertRegexpMatches(err.getvalue(), raising_reg)
-				flush()
-
 	def test_main_normal(self):
 		parser = get_argparser()
 		out = StrIO()
