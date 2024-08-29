@@ -34,7 +34,7 @@ class Spec(object):
 
 	.. note::
 		Methods that create the specifications return ``self``, so calls to them 
-		may be chained: ``Spec().type(unicode).re('^\w+$')``. This does not 
+		may be chained: ``Spec().type(unicode).re('^\\w+$')``. This does not
 		apply to functions that *apply* specification like :py:meth`Spec.match`.
 
 	.. note::
@@ -585,7 +585,7 @@ class Spec(object):
 			msg_func
 			or (lambda value: 'String "{0}" is not an alphanumeric/underscore colon-separated identifier'.format(value))
 		)
-		return self.re('^\w+(?::\w+)?$', msg_func)
+		return self.re(r'^\w+(?::\w+)?$', msg_func)
 
 	def oneof(self, collection, msg_func=None):
 		'''Describe value that is equal to one of the value in the collection

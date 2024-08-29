@@ -843,17 +843,16 @@ class TestTime(TestCommon):
 		time = Args(hour=0, minute=45)
 		pl = Pl()
 		hour_str = ['12', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven']
-		minute_str = {'0':  'o\'clock', '5':  'five past', '10': 'ten past','15':
-			'quarter past','20': 'twenty past', '25': 'twenty-five past',
-			'30': 'half past', '35': 'twenty-five to','40': 'twenty to', '45':
-			'quarter to', '50': 'ten to', '55': 'five to'}
+		minute_str = {'0':  '{hour_str} o\'clock', '5':  'five past {hour_str}', '10': 'ten past {hour_str}',
+			'15': 'quarter past {hour_str}', '20': 'twenty past {hour_str}', '25': 'twenty-five past {hour_str}',
+			'30': 'half past {hour_str}', '35': 'twenty-five to {hour_str}', '40': 'twenty to {hour_str}',
+			'45': 'quarter to {hour_str}', '50': 'ten to {hour_str}', '55': 'five to {hour_str}'}
 		special_case_str = {
 			'(23, 58)': '~ midnight',
 			'(23, 59)': '~ midnight',
 			'(0, 0)': 'midnight',
 			'(0, 1)': '~ midnight',
-			'(0, 2)': '~ midnight',
-			'(12, 0)': 'twelve o\'clock'}
+			'(0, 2)': '~ midnight'}
 		with replace_attr(self.module, 'datetime', Args(strptime=lambda timezone, fmt: Args(tzinfo=timezone), now=lambda tz: time)):
 			self.assertEqual(self.module.fuzzy_time(pl=pl, hour_str=hour_str, minute_str=minute_str, special_case_str=special_case_str), 'quarter to one')
 			self.assertEqual(self.module.fuzzy_time(pl=pl), 'quarter to one')
@@ -867,7 +866,7 @@ class TestTime(TestCommon):
 			self.assertEqual(self.module.fuzzy_time(pl=pl), 'twenty-five to twelve')
 			time.hour = 12
 			time.minute = 0
-			self.assertEqual(self.module.fuzzy_time(pl=pl, hour_str=hour_str, minute_str=minute_str, special_case_str=special_case_str), 'twelve o\'clock')
+			self.assertEqual(self.module.fuzzy_time(pl=pl, hour_str=hour_str, minute_str=minute_str, special_case_str=special_case_str), '12 o\'clock')
 			self.assertEqual(self.module.fuzzy_time(pl=pl), 'noon')
 			time.hour = 11
 			time.minute = 33
@@ -875,7 +874,7 @@ class TestTime(TestCommon):
 			self.assertEqual(self.module.fuzzy_time(pl=pl, unicode_text=False), 'twenty-five to twelve')
 			time.hour = 12
 			time.minute = 0
-			self.assertEqual(self.module.fuzzy_time(pl=pl, unicode_text=False, hour_str=hour_str, minute_str=minute_str, special_case_str=special_case_str), 'twelve o\'clock')
+			self.assertEqual(self.module.fuzzy_time(pl=pl, unicode_text=False, hour_str=hour_str, minute_str=minute_str, special_case_str=special_case_str), '12 o\'clock')
 			self.assertEqual(self.module.fuzzy_time(pl=pl, unicode_text=False), 'noon')
 			time.hour = 11
 			time.minute = 33
@@ -883,7 +882,7 @@ class TestTime(TestCommon):
 			self.assertEqual(self.module.fuzzy_time(pl=pl, unicode_text=True), 'twenty‐five to twelve')
 			time.hour = 12
 			time.minute = 0
-			self.assertEqual(self.module.fuzzy_time(pl=pl, unicode_text=True, hour_str=hour_str, minute_str=minute_str, special_case_str=special_case_str), 'twelve o’clock')
+			self.assertEqual(self.module.fuzzy_time(pl=pl, unicode_text=True, hour_str=hour_str, minute_str=minute_str, special_case_str=special_case_str), '12 o’clock')
 			self.assertEqual(self.module.fuzzy_time(pl=pl, unicode_text=True),'noon')
 
 

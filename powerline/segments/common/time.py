@@ -1,7 +1,5 @@
 # vim:fileencoding=utf-8:noet
-from __future__ import (unicode_literals, division, absolute_import, print_function)
-
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def date(pl, format='%Y-%m-%d', istime=False, timezone=None):
@@ -45,11 +43,11 @@ UNICODE_TEXT_TRANSLATION = {
 }
 
 
-def fuzzy_time(pl, format='{minute_str} {hour_str}', unicode_text=False, timezone=None, hour_str=['twelve', 'one', 'two', 'three', 'four',
+def fuzzy_time(pl, format=None, unicode_text=False, timezone=None, hour_str=['twelve', 'one', 'two', 'three', 'four',
     'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven'], minute_str = {
-	'0':  'o\'clock', '5':  'five past', '10': 'ten past','15': 'quarter past',
-	'20': 'twenty past', '25': 'twenty-five past', '30': 'half past', '35': 'twenty-five to',
-	'40': 'twenty to', '45': 'quarter to', '50': 'ten to', '55': 'five to'
+	'0':  '{hour_str} o\'clock', '5':  'five past {hour_str}', '10': 'ten past {hour_str}','15': 'quarter past {hour_str}',
+	'20': 'twenty past {hour_str}', '25': 'twenty-five past {hour_str}', '30': 'half past {hour_str}', '35': 'twenty-five to {hour_str}',
+	'40': 'twenty to {hour_str}', '45': 'quarter to {hour_str}', '50': 'ten to {hour_str}', '55': 'five to {hour_str}'
 	}, special_case_str = {
 	    '(23, 58)': 'round about midnight',
 	    '(23, 59)': 'round about midnight',
@@ -62,8 +60,7 @@ def fuzzy_time(pl, format='{minute_str} {hour_str}', unicode_text=False, timezon
 	'''Display the current time as fuzzy time, e.g. "quarter past six".
 
 	:param string format:
-		Format used to display the fuzzy time. (Ignored when a special time
-		is displayed.)
+		(unused)
 	:param bool unicode_text:
 		If true then hyphenminuses (regular ASCII ``-``) and single quotes are
 		replaced with unicode dashes and apostrophes.
@@ -74,7 +71,9 @@ def fuzzy_time(pl, format='{minute_str} {hour_str}', unicode_text=False, timezon
 		Strings to be used to display the hour, starting with midnight.
 		(This list may contain 12 or 24 entries.)
 	:param dict minute_str:
-		Dictionary mapping minutes to strings to be used to display them.
+		Dictionary mapping minutes to strings to be used to display them. Each entry may
+		optionally come with a format field "{hour_str}" to indicate the position of the
+		string used for the current hour.
 	:param dict special_case_str:
 		Special strings for special times.
 
@@ -100,7 +99,7 @@ def fuzzy_time(pl, format='{minute_str} {hour_str}', unicode_text=False, timezon
 		pass
 
 	hour = now.hour
-	if now.minute >= 30:
+	if now.minute >= 32:
 		hour = hour + 1
 	hour = hour % len(hour_str)
 
@@ -115,7 +114,7 @@ def fuzzy_time(pl, format='{minute_str} {hour_str}', unicode_text=False, timezon
 		elif now.minute < mn and mn - now.minute < min_dis:
 			min_dis = mn - now.minute
 			min_pos = mn
-	result = format.format(minute_str=minute_str[str(min_pos)], hour_str=hour_str[hour])
+	result = minute_str[str(min_pos)].format(hour_str=hour_str[hour])
 
 	if unicode_text:
 		result = result.translate(UNICODE_TEXT_TRANSLATION)

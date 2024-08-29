@@ -41,7 +41,7 @@ def generate_json_config_loader(lhadproblem):
 	return load_json_config
 
 
-function_name_re = '^(\w+\.)*[a-zA-Z_]\w*$'
+function_name_re = r'^(\w+\.)*[a-zA-Z_]\w*$'
 
 
 divider_spec = Spec().printable().len(
@@ -205,7 +205,7 @@ vim_colorscheme_spec = (Spec(
 		mode_translations_value_spec(),
 	).optional().context_message('Error while loading mode translations (key {key})'),
 ).context_message('Error while loading vim colorscheme'))
-shell_mode_spec = Spec().re('^(?:[\w\-]+|\.safe)$').copy
+shell_mode_spec = Spec().re(r'^(?:[\w\-]+|\.safe)$').copy
 shell_colorscheme_spec = (Spec(
 	name=name_spec(),
 	groups=groups_spec(),
@@ -223,7 +223,7 @@ args_spec = Spec(
 segment_module_spec = Spec().type(unicode).func(check_segment_module).optional().copy
 exinclude_spec = Spec().re(function_name_re).func(check_exinclude_function).copy
 segment_spec_base = Spec(
-	name=Spec().re('^[a-zA-Z_]\w*$').optional(),
+	name=Spec().re(r'^[a-zA-Z_]\w*$').optional(),
 	function=Spec().re(function_name_re).func(check_segment_function).optional(),
 	exclude_modes=Spec().list(vim_mode_spec()).optional(),
 	include_modes=Spec().list(vim_mode_spec()).optional(),
