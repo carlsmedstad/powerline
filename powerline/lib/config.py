@@ -2,7 +2,6 @@
 from __future__ import (unicode_literals, division, absolute_import, print_function)
 
 import json
-import codecs
 
 from copy import deepcopy
 from threading import Event, Lock
@@ -13,7 +12,7 @@ from powerline.lib.watcher import create_file_watcher
 
 
 def open_file(path):
-	return codecs.open(path, encoding='utf-8')
+	return open(path, encoding='utf-8')
 
 
 def load_json_config(config_file_path, load=json.load, open_file=open_file):

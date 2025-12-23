@@ -6,7 +6,6 @@ from __future__ import (unicode_literals, division, absolute_import, print_funct
 
 import sys
 import re
-import codecs
 import os
 
 from io import StringIO
@@ -115,7 +114,7 @@ class TestHandlers(TestRE):
 				logger, pl, get_module_attr = create_logger(common_config, stream=stream)
 				pl.error('Foo')
 				close_handlers(logger)
-				with codecs.open(file_name, encoding='utf-8') as fp:
+				with open(file_name, encoding='utf-8') as fp:
 					self.assertMatches(fp.read(), '^' + TIMESTAMP_RE + ':ERROR:__unknown__:Foo\n$')
 			finally:
 				os.unlink(file_name)
@@ -138,7 +137,7 @@ class TestHandlers(TestRE):
 				pl.error('Foo')
 				close_handlers(logger)
 				self.assertTrue(os.path.isdir(os.path.dirname(file_name)))
-				with codecs.open(file_name, encoding='utf-8') as fp:
+				with open(file_name, encoding='utf-8') as fp:
 					self.assertMatches(fp.read(), '^' + TIMESTAMP_RE + ':ERROR:__unknown__:Foo\n$')
 			finally:
 				rmtree(os.path.dirname(file_name))
@@ -161,7 +160,7 @@ class TestHandlers(TestRE):
 					pl.error('Foo')
 					close_handlers(logger)
 					for file_name in (file_name_1, file_name_2):
-						with codecs.open(file_name, encoding='utf-8') as fp:
+						with open(file_name, encoding='utf-8') as fp:
 							self.assertMatches(fp.read(), '^' + TIMESTAMP_RE + ':ERROR:__unknown__:Foo\n$')
 				finally:
 					os.unlink(file_name_1)
@@ -186,7 +185,7 @@ class TestHandlers(TestRE):
 					pl.error('Foo')
 					close_handlers(logger)
 					for file_name in (file_name_1, file_name_2):
-						with codecs.open(file_name, encoding='utf-8') as fp:
+						with open(file_name, encoding='utf-8') as fp:
 							self.assertMatches(fp.read(), '^' + TIMESTAMP_RE + ':ERROR:__unknown__:Foo\n$')
 				finally:
 					os.unlink(file_name_1)
@@ -210,7 +209,7 @@ class TestHandlers(TestRE):
 				logger, pl, get_module_attr = create_logger(common_config, stream=stream)
 				pl.error('Foo')
 				close_handlers(logger)
-				with codecs.open(file_name, encoding='utf-8') as fp:
+				with open(file_name, encoding='utf-8') as fp:
 					self.assertMatches(fp.read(), '^' + TIMESTAMP_RE + ':ERROR:__unknown__:Foo\n$')
 			finally:
 				os.unlink(file_name)
@@ -234,9 +233,9 @@ class TestHandlers(TestRE):
 					pl.error('Foo')
 					pl.error('Bar')
 					close_handlers(logger)
-					with codecs.open(file_name, encoding='utf-8') as fp:
+					with open(file_name, encoding='utf-8') as fp:
 						self.assertMatches(fp.read(), '^' + TIMESTAMP_RE + ':ERROR:__unknown__:Bar\n$')
-					with codecs.open(file_name + '.1', encoding='utf-8') as fp:
+					with open(file_name + '.1', encoding='utf-8') as fp:
 						self.assertMatches(fp.read(), '^' + TIMESTAMP_RE + ':ERROR:__unknown__:Foo\n$')
 				finally:
 					os.unlink(file_name + '.1')
