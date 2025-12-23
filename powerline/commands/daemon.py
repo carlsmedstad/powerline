@@ -16,9 +16,7 @@ def get_argparser(ArgumentParser=argparse.ArgumentParser):
 		     'Does not silence exceptions in any case.'
 	)
 	parser.add_argument('--socket', '-s', help='Specify socket which will be used for connecting to daemon.')
-	exclusive_group = parser.add_mutually_exclusive_group()
-	exclusive_group.add_argument('--kill', '-k', action='store_true', help='Kill an already running instance.')
-	replace_group = exclusive_group.add_argument_group()
-	replace_group.add_argument('--foreground', '-f', action='store_true', help='Run in the foreground (don’t daemonize).')
-	replace_group.add_argument('--replace', '-r', action='store_true', help='Replace an already running instance.')
+	parser.add_argument('--kill', '-k', action='store_true', help='Kill an already running instance.')
+	parser.add_argument('--foreground', '-f', action='store_true', help='Run in the foreground (don\'t daemonize).')
+	parser.add_argument('--replace', '-r', action='store_true', help='Replace an already running instance.')
 	return parser
